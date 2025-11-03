@@ -27,21 +27,29 @@ const LoginPage = () => {
 					const res = await fetch(`${baseURL}/api/auth/login`,
 						{
 							method : "POST",
-							credentials : "include",
 							headers : 
 							{
 								"Content-Type" : 'application/json',
 							},
+							credentials : "include",
 							body : JSON.stringify({userName,password})
 						}
 					)
 
-					const data = await res.json()
+				     const text = await res.text();
+                     console.log("RAW RESPONSE:", text);
+
+					let data;
+                    try {
+                        data = JSON.parse(text);
+                   } catch {
+                       throw new Error("Invalid server response. (Maybe HTML instead of JSON)");
+	            	}
 
 					if(!res.ok){
 						throw new Error(data.error || "Something went wrong")
 					}
-					console.log(data)
+					console.log("Parsed Data:",data)
 					return data
 					
 				} catch (error) {
